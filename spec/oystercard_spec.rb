@@ -8,4 +8,12 @@ describe Oystercard do
       expect(subject.balance).to eq 0
     end
   end
+
+  describe '#top_up' do
+    it 'allow a card to be topped up' do
+      balance = oystercard.balance
+      amount = 10
+      expect(oystercard.top_up(amount)).to eq balance + amount
+    end
+  end
 end
