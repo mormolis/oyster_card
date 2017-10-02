@@ -14,7 +14,11 @@ describe Oystercard do
       balance = oystercard.balance
       # amount = 10
       # expect(oystercard.top_up(amount)).to eq balance + amount
-      expect{ subject.top_up 1 }.to change{ subject.balance }.by 1
+      expect{ oystercard.top_up 1 }.to change{ oystercard.balance }.by 1
+    end
+
+    it 'throws exception if top-up limit is exceeded' do
+      expect { oystercard.top_up 91 }.to raise_error 'Card limit exceeded!'
     end
   end
 end
