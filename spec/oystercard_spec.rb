@@ -18,7 +18,7 @@ describe Oystercard do
     end
 
     it 'throws exception if top-up limit is exceeded' do
-      expect { oystercard.top_up 91 }.to raise_error 'Card limit exceeded!'
+      expect { oystercard.top_up 91 }.to raise_error "Card limit #{Oystercard::MAXIMUM_BALANCE} exceeded!"
     end
   end
 end
