@@ -11,21 +11,11 @@ describe Oystercard do
 
   describe '#top_up' do
     it 'allow a card to be topped up' do
-      balance = oystercard.balance
-      # amount = 10
-      # expect(oystercard.top_up(amount)).to eq balance + amount
       expect{ oystercard.top_up 1 }.to change{ oystercard.balance }.by 1
     end
 
     it 'throws exception if top-up limit is exceeded' do
       expect { oystercard.top_up Oystercard::MAXIMUM_BALANCE + 1 }.to raise_error "Card limit #{Oystercard::MAXIMUM_BALANCE} exceeded!"
-    end
-  end
-
-  describe '#deduct' do
-    it 'deducts an amount from the balance of the card' do
-      oystercard.top_up(20)
-      expect { oystercard.deduct 10}.to change { oystercard.balance }.by -10
     end
   end
 
@@ -36,14 +26,13 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-
     it 'updates in_journey to true' do
       oystercard.top_up(Oystercard::MINIMUM_BALANCE)
       oystercard.touch_in
       expect(oystercard).to be_in_journey
     end
 
-    it 'only allows a journey if the card has a minimum balance' do
+    it 'only allows touch in if the card has a minimum balance' do
       expect { oystercard.touch_in }.to raise_error "Card balance below minimum of #{Oystercard::MINIMUM_BALANCE}!"
     end
   end
@@ -52,6 +41,12 @@ describe Oystercard do
     it 'updates in_journey to false' do
       oystercard.touch_out
       expect(oystercard).not_to be_in_journey
+    end
+
+    it 'deducts the minimum fare' do
+      oystercard.top_up(Oystercard::MINIMUM_BALANCE)
+      oystercard.touch_in
+      expect { oystercard.touch_out }.to change {oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
     end
 
   end
