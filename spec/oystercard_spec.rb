@@ -38,10 +38,14 @@ describe Oystercard do
   describe '#touch_in' do
 
     it 'updates in_journey to true' do
+      oystercard.top_up(Oystercard::MINIMUM_BALANCE)
       oystercard.touch_in
       expect(oystercard).to be_in_journey
     end
 
+    it 'only allows a journey if the card has a minimum balance' do
+      expect { oystercard.touch_in }.to raise_error "Card balance below minimum of #{Oystercard::MINIMUM_BALANCE}!"
+    end
   end
 
   describe '#touch_out' do
