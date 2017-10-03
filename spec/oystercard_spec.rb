@@ -26,26 +26,26 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    let(:station) {double(:station, entry_station: 'Victoria')}
+    let(:station) {double(:station)}
     it 'updates in_journey to true' do
       oystercard.top_up(Oystercard::MINIMUM_BALANCE)
-      oystercard.touch_in(station.entry_station)
+      oystercard.touch_in(station)
       expect(oystercard).to be_in_journey
     end
 
     it 'only allows touch in if the card has a minimum balance' do
-      expect { oystercard.touch_in(station.entry_station) }.to raise_error "Card balance below minimum of #{Oystercard::MINIMUM_BALANCE}!"
+      expect { oystercard.touch_in(station) }.to raise_error "Card balance below minimum of #{Oystercard::MINIMUM_BALANCE}!"
     end
 
     it 'notes the entry station of a journey' do
       oystercard.top_up(Oystercard::MINIMUM_BALANCE)
-      oystercard.touch_in(station.entry_station)
-      expect(oystercard.entry_station).to eq(station.entry_station)
+      oystercard.touch_in(station)
+      expect(oystercard.entry_station).to eq(station)
     end
   end
 
   describe '#touch_out' do
-    let(:station) {double(:station, entry_station: 'Victoria')}
+    let(:station) {double(:station)}
     it 'updates in_journey to false' do
       oystercard.touch_out
       expect(oystercard).not_to be_in_journey
@@ -53,14 +53,14 @@ describe Oystercard do
 
     it 'deducts the minimum fare' do
       oystercard.top_up(Oystercard::MINIMUM_BALANCE)
-      oystercard.touch_in(station.entry_station)
+      oystercard.touch_in(station)
       expect { oystercard.touch_out }.to change {oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
     end
 
     it 'resets entry_station to nil when touching out' do
       oystercard.top_up(Oystercard::MINIMUM_BALANCE)
-      oystercard.touch_in(station.entry_station)
-      expect { oystercard.touch_out }.to change { oystercard.entry_station }.from(station.entry_station).to(nil)
+      oystercard.touch_in(station)
+      expect { oystercard.touch_out }.to change { oystercard.entry_station }.from(station).to(nil)
     end
   end
 
