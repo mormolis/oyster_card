@@ -27,6 +27,30 @@ describe Oystercard do
       oystercard.top_up(20)
       expect { oystercard.deduct 10}.to change { oystercard.balance }.by -10
     end
+  end
+
+  describe '#in_journey' do
+    it 'returns status' do
+      expect(oystercard).not_to be_in_journey
+    end
+  end
+
+  describe '#touch_in' do
+
+    it 'updates in_journey to true' do
+      oystercard.touch_in
+      expect(oystercard).to be_in_journey
+    end
 
   end
+
+  describe '#touch_out' do
+    it 'updates in_journey to false' do
+      oystercard.touch_out
+      expect(oystercard).not_to be_in_journey
+    end
+
+  end
+
+
 end
