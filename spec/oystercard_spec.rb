@@ -18,7 +18,15 @@ describe Oystercard do
     end
 
     it 'throws exception if top-up limit is exceeded' do
-      expect { oystercard.top_up 91 }.to raise_error "Card limit #{Oystercard::MAXIMUM_BALANCE} exceeded!"
+      expect { oystercard.top_up Oystercard::MAXIMUM_BALANCE + 1 }.to raise_error "Card limit #{Oystercard::MAXIMUM_BALANCE} exceeded!"
     end
+  end
+
+  describe '#deduct' do
+    it 'deducts an amount from the balance of the card' do
+      oystercard.top_up(20)
+      expect { oystercard.deduct 10}.to change { oystercard.balance }.by -10
+    end
+
   end
 end
