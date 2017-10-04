@@ -7,6 +7,7 @@ class Oystercard
 
   def initialize
     @balance = 0
+    @journey_history = []
   end
 
   def top_up(amount)
@@ -23,9 +24,14 @@ class Oystercard
     @entry_station = entry_station
   end
 
-  def touch_out
+  def touch_out(exit_station)
     deduct(MINIMUM_FARE)
+    journey_history << Hash.new(entry_station: @entry_station, exit_station: exit_station)
     @entry_station = nil
+  end
+
+  def journey_history
+    @journey_history
   end
 
   private
