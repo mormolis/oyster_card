@@ -20,13 +20,13 @@ class Oystercard
   end
 
   def touch_in(entry_station)
-    fail "Card balance below minimum of #{Oystercard::MINIMUM_BALANCE}!" if @balance < MINIMUM_BALANCE
+    fail "Card balance below minimum of #{MINIMUM_BALANCE}!" if @balance < MINIMUM_BALANCE
     @entry_station = entry_station
   end
 
   def touch_out(exit_station)
     deduct(MINIMUM_FARE)
-    journey_history << Hash.new(entry_station: @entry_station, exit_station: exit_station)
+    journey_history << { entry_station: @entry_station, exit_station: exit_station }
     @entry_station = nil
   end
 
