@@ -1,6 +1,6 @@
 require_relative './journey'
 class Oystercard
-  attr_reader :balance, :entry_station, :journey
+  attr_reader :balance, :entry_station, :journey, :journey_history
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
@@ -18,20 +18,32 @@ class Oystercard
 
   def touch_in(station)
     fail "Card balance below minimum of #{MINIMUM_BALANCE}!" if @balance < MINIMUM_BALANCE
-    create_journey
-    deduct(journey.fare)
+    if !journey
+      create_journey
+    else
+      journey_history << "WRONG SEQUENCE"
+      deduct(journey.fare)
+      
+    end
     journey.start(station)
   end
 
   def touch_out(station)
-    deduct(journey.fare)
-    journey.end(station)
-    @journey_history << journey
+    if journey
+      journey.end(station)
+      deduct(journey.fare) 
+    else
+      create_journey
+      deduct(journey.fare)
+      @journey = "WRONG SEQUENCE"
+    end
+    journey_history << journey
+    @journey = nil
   end
 
   private
 
-  attr_reader :journey_history
+  
 
   def deduct(amount)
     @balance -= amount

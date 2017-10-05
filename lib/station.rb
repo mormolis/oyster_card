@@ -7,4 +7,8 @@ class Station
     @zone = info[:zone]
   end
 
+  def to_s
+    "[#{name}:#{zone}]"
+  end
+
 end
