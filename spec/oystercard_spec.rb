@@ -3,9 +3,9 @@ require './lib/oystercard'
 describe Oystercard do
 
   subject(:oystercard) { described_class.new }
-  let(:entry_station) {double(Station)}
-  let(:exit_station) {double(Station)}
-  let(:journey) {double(Journey)}
+  let(:entry_station) {double('station')}
+  let(:exit_station) {double('station')}
+  let(:journey) {double('journey')}
   # before {expect(journey.to receive(:new).with(1, anything))}
 
   let(:minimum_balance) { Oystercard::MINIMUM_BALANCE }
@@ -28,21 +28,17 @@ describe Oystercard do
     end
   end
 
-  describe '#in_journey' do
-    it 'returns status' do
-      expect(oystercard).not_to be_in_journey
-    end
-  end
+  # describe '#in_journey' do
+  #   it 'returns status' do
+  #     expect(oystercard).not_to be_in_journey
+  #   end
+  # end
 
   describe '#touch_in' do
     before do
       oystercard.top_up(maximum_balance)
     end
-    it 'updates in_journey to true' do
-      pending("creating new journey class")
-      oystercard.touch_in(entry_station)
-      expect(oystercard).to be_in_journey
-    end
+
     it 'only allows touch in if the card has a minimum balance' do
       maximum_balance.times { oystercard.touch_out(exit_station)}  ##################
       expect { oystercard.touch_in(entry_station) }
@@ -50,16 +46,16 @@ describe Oystercard do
     end
 
     it 'notes the entry station of a journey' do
-      pending ("creating the journey class")
+      # pending ("creating the journey class")
       oystercard.touch_in(entry_station)
       expect(oystercard.entry_station).to eq(entry_station)
     end
 
-    it 'starts the journey' do
-      expect(Journey).to receive(:new).with(entry_station)
-      oystercard.touch_in(entry_station)
+    # it 'starts the journey' do
+    #   expect(Journey).to receive(:new).with(entry_station)
+    #   oystercard.touch_in(entry_station)
       
-    end
+    # end
 
   end
 
@@ -69,26 +65,21 @@ describe Oystercard do
       oystercard.top_up(minimum_balance)
       oystercard.touch_in(entry_station)
     end
-
-    it 'updates in_journey to false' do
-      oystercard.touch_out exit_station
-      expect(oystercard).not_to be_in_journey
-    end
     it 'deducts the minimum fare' do
       expect { oystercard.touch_out(exit_station) }.to change {oystercard.balance}.by(-minimum_fare)
     end
     it 'resets entry_station to nil when touching out' do
-      pending("testing journey class")
+      # pending("testing journey class")
       expect { oystercard.touch_out(exit_station) }.to change { oystercard.entry_station }.to(nil)
     end
   end
 
   describe '#journey_history' do
 
-    let(:journey) { { entry_station: entry_station, exit_station: exit_station } }
+    let(:journey) { double(Journey) }
 
     it 'returns journey history' do
-      pending("testing journey class")
+      # pending("testing journey class")
       oystercard.top_up maximum_balance
       oystercard.touch_in entry_station
       oystercard.touch_out exit_station

@@ -1,9 +1,19 @@
 class Journey
-  def initialize(entry_station)
-    @entry_station = entry_station
+
+  def start_at(station)
+    @entry_station = station
+  end
+
+  def end_at(station)
+    @exit_station = station
   end
 
   def in_journey?
-    false
+    !!entry_station && !exit_station
   end
+
+  private 
+
+  attr_reader :entry_station, :exit_station
+
 end
