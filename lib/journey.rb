@@ -1,10 +1,10 @@
 class Journey
 
-  def start_at(station)
+  def start(station)
     @entry_station = station
   end
 
-  def end_at(station)
+  def end(station)
     @exit_station = station
   end
 

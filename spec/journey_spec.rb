@@ -17,7 +17,7 @@ describe Journey do
   describe '#start_at' do
 
     it 'updates in_journey to true' do
-      journey.start_at(station)
+      journey.start(station)
       expect(journey).to be_in_journey
     end
 
@@ -26,8 +26,8 @@ describe Journey do
   describe '#end' do
 
     it 'updates in_journey to false' do
-      journey.start_at(station)
-      journey.end_at(station)
+      journey.start(station)
+      journey.end(station)
       expect(journey).not_to be_in_journey
     end
 
