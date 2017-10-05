@@ -9,7 +9,8 @@ describe Oystercard do
 
   let(:minimum_balance) { Oystercard::MINIMUM_BALANCE }
   let(:maximum_balance) { Oystercard::MAXIMUM_BALANCE }
-  let(:minimum_fare) { Oystercard::MINIMUM_FARE }
+  # let(:minimum_fare) { Oystercard::MINIMUM_FARE }
+  # let(:maximum_fare) { Oystercard::MAXIMUM_FARE }
 
   describe '#balance' do
     it 'check a new card has a balance of zero' do
@@ -29,25 +30,23 @@ describe Oystercard do
 
   describe '#touch_in' do
 
-    before do
-      oystercard.top_up(maximum_balance)
-    end
-
     it 'starts a journey' do
+      oystercard.top_up(maximum_balance)
       allow(oystercard).to receive(:journey)
+      allow(oystercard.journey).to receive(:fare) {1}
       expect(oystercard.journey).to receive(:start).with(entry_station)
       oystercard.touch_in(entry_station)
     end
-
     it 'only allows touch in if the card has a minimum balance' do
-      maximum_balance.times { oystercard.touch_out(exit_station)}  ##################
       expect { oystercard.touch_in(entry_station) }
         .to raise_error "Card balance below minimum of #{minimum_balance}!"
     end
-
-    it 'notes the entry station of a journey' do
-      oystercard.touch_in(entry_station)
-      expect(oystercard.entry_station).to eq(entry_station)
+    it 'will charge a penalty if fail to touch in' do
+      oystercard.top_up(maximum_balance)
+      allow(oystercard).to receive(:journey)
+      allow(oystercard.journey).to receive(:start).with(entry_station)
+      allow(oystercard.journey).to receive(:fare).and_return(6)
+      expect{oystercard.touch_in(entry_station)}.to change{ oystercard.balance}.by -6
     end
 
   end
@@ -58,11 +57,14 @@ describe Oystercard do
       oystercard.top_up(minimum_balance)
       oystercard.touch_in(entry_station)
     end
-    it 'deducts the minimum fare' do
-      expect { oystercard.touch_out(exit_station) }.to change {oystercard.balance}.by(-minimum_fare)
+    it 'deducts the minimum fare' do 
+      allow(oystercard.journey).to receive(:fare).and_return(1)
+      expect { oystercard.touch_out(exit_station) }.to change {oystercard.balance}.by (-1)
     end
-    it 'resets entry_station to nil when touching out' do
-      expect { oystercard.touch_out(exit_station) }.to change { oystercard.entry_station }.to(nil)
+    it 'ends a journey' do
+      # allow(oystercard).to receive(:journey)
+      expect(oystercard.journey).to receive(:end).with(exit_station)
+      oystercard.touch_out(exit_station)
     end
   end
 
